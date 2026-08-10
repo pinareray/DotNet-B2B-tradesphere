@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - TradeSphere</title>
+</head>
+<body style="font-family: system-ui; margin: 0; padding: 0; background-color: #f8f9fa;">
+
+    <!-- Tıpkı bir UI komponenti gibi, Navbar burada tek bir kez tanımlanır -->
+    <header style="background-color: #212529; color: white; padding: 15px 20px;">
+        <h2 style="margin: 0;">TradeSphere B2B</h2>
+    </header>
+
+    <!-- Diğer sayfaların (Index vb.) içeriği tam olarak buraya enjekte edilecek -->
+    <main style="padding: 20px;">
+        @RenderBody()
+    </main>
+
+    <footer style="text-align: center; padding: 10px; margin-top: 50px; color: #6c757d;">
+        <small>&copy; 2026 - Pınar Eray | Tüm hakları saklıdır.</small>
+    </footer>
+
+</body>
+</html>
