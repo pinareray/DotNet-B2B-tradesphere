@@ -1,0 +1,13 @@
+/* Özel Tasarımlarımız Buraya Gelecek */
+
+.navbar-brand {
+    /* Logomuzun fontunu biraz kalınlaştıralım ve harf aralığını açalım */
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: #ffc107 !important; /* Test için Navbar'daki logoyu sarı yapalım */
+}
+
+body {
+    /* Arka planı çok hafif bir gri yapalım */
+    background-color: #f4f6f9 !important; 
+}
