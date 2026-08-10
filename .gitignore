@@ -482,3 +482,7 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# Local NuGet cache (permission workaround)
+.nuget/
+*.db
