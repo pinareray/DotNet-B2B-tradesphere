@@ -1,0 +1,28 @@
+@{
+    ViewData["Title"] = "Sipariş Tamamlandı";
+    var orderId = ViewData["OrderId"];
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow border-0 text-center">
+            <div class="card-body p-5">
+                <div class="display-4 text-success mb-3">✓</div>
+                <h2 class="fw-bold mb-3">Siparişiniz Alındı!</h2>
+                @if (orderId is not null)
+                {
+                    <p class="text-muted mb-4">
+                        Sipariş numaranız: <strong>#@orderId</strong>
+                    </p>
+                }
+                <p class="mb-4">
+                    B2B siparişiniz başarıyla oluşturuldu. Sipariş geçmişinizden detayları görüntüleyebilirsiniz.
+                </p>
+                <div class="d-flex flex-column flex-sm-row gap-2 justify-content-center">
+                    <a asp-action="History" class="btn btn-dark">Siparişlerim</a>
+                    <a asp-controller="Product" asp-action="Index" class="btn btn-outline-secondary">Alışverişe Devam Et</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

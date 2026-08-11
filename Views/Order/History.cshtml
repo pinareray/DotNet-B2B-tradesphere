@@ -1,0 +1,43 @@
+@model IEnumerable<DotNet_B2B_tradesphere.ViewModels.OrderSummaryViewModel>
+
+@{
+    ViewData["Title"] = "Siparişlerim";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">Siparişlerim</h2>
+    <span class="badge bg-primary">@Model.Count() sipariş</span>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info shadow-sm text-center py-5">
+        <h4 class="alert-heading">Henüz siparişiniz yok</h4>
+        <p class="mb-3">İlk siparişinizi vermek için ürünlere göz atın.</p>
+        <a asp-controller="Product" asp-action="Index" class="btn btn-dark">Ürünlere Git</a>
+    </div>
+}
+else
+{
+    <table class="table table-hover shadow-sm bg-white">
+        <thead class="table-dark">
+            <tr>
+                <th scope="col">Sipariş No</th>
+                <th scope="col">Tarih</th>
+                <th scope="col" class="text-center">Ürün Adedi</th>
+                <th scope="col" class="text-end">Toplam Tutar</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in Model)
+            {
+                <tr>
+                    <td>#@order.OrderId</td>
+                    <td>@order.OrderDate.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
+                    <td class="text-center">@order.TotalItems</td>
+                    <td class="text-end">@order.TotalAmount.ToString("C2")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
