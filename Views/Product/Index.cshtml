@@ -13,6 +13,11 @@
     </div>
 </div>
 
+@if (TempData["CartError"] is string cartError)
+{
+    <div class="alert alert-danger shadow-sm">@cartError</div>
+}
+
 <div class="mb-3">
     @if (inStockOnly)
     {
@@ -49,6 +54,13 @@
                     </span>
                 </td>
                 <td class="text-end">
+                    @if (product.StockQuantity > 0)
+                    {
+                        <form asp-controller="Cart" asp-action="AddToCart" asp-route-productId="@product.Id" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-success btn-sm">Sepete Ekle</button>
+                        </form>
+                    }
                     <a asp-action="Edit" asp-route-id="@product.Id" class="btn btn-outline-primary btn-sm">Düzenle</a>
                     <form asp-action="Delete" asp-route-id="@product.Id" method="post" class="d-inline">
                         @Html.AntiForgeryToken()

@@ -28,6 +28,9 @@
                     @if (User.Identity?.IsAuthenticated == true)
                     {
                         <li class="nav-item">
+                            @await Component.InvokeAsync("CartSummary")
+                        </li>
+                        <li class="nav-item">
                             <span class="nav-link text-white-50">
                                 Merhaba, <strong class="text-white">@User.Identity.Name</strong>
                             </span>
