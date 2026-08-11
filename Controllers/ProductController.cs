@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace DotNet_B2B_tradesphere.Controllers;
 
 [Authorize]
-public class ProductController : Controller
+public class ProductController : BaseController
 {
     private readonly IProductService _productService;
 
@@ -35,10 +35,12 @@ public class ProductController : Controller
         return View(viewModel);
     }
 
+    [Authorize(Roles = AppRoles.Admin)]
     [HttpGet]
     public IActionResult Create()
         => View(new ProductCreateViewModel());
 
+    [Authorize(Roles = AppRoles.Admin)]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(ProductCreateViewModel model)
@@ -54,9 +56,11 @@ public class ProductController : Controller
         };
 
         await _productService.AddAsync(product);
+        ShowAlert("Başarılı", "Ürün başarıyla eklendi.", "success");
         return RedirectToAction(nameof(Index));
     }
 
+    [Authorize(Roles = AppRoles.Admin)]
     [HttpGet]
     public async Task<IActionResult> Edit(int id)
     {
@@ -76,6 +80,7 @@ public class ProductController : Controller
         return View(model);
     }
 
+    [Authorize(Roles = AppRoles.Admin)]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(ProductUpdateViewModel model)
@@ -93,14 +98,17 @@ public class ProductController : Controller
         product.IsActive = model.IsActive;
 
         await _productService.UpdateAsync(product);
+        ShowAlert("Başarılı", "Ürün başarıyla güncellendi.", "success");
         return RedirectToAction(nameof(Index));
     }
 
+    [Authorize(Roles = AppRoles.Admin)]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(int id)
     {
         await _productService.DeleteAsync(id);
+        ShowAlert("Başarılı", "Ürün başarıyla silindi.", "success");
         return RedirectToAction(nameof(Index));
     }
 }

@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using DotNet_B2B_tradesphere.Models;
 using DotNet_B2B_tradesphere.Services;
 using DotNet_B2B_tradesphere.ViewModels;
 using Microsoft.AspNetCore.Authentication;
@@ -9,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace DotNet_B2B_tradesphere.Controllers;
 
 [AllowAnonymous]
-public class AuthController : Controller
+public class AuthController : BaseController
 {
     private readonly IAuthService _authService;
 
@@ -44,11 +45,16 @@ public class AuthController : Controller
             return View(model);
         }
 
+        var role = string.Equals(result.Email, "admin@tradesphere.com", StringComparison.OrdinalIgnoreCase)
+            ? AppRoles.Admin
+            : AppRoles.Dealer;
+
         var claims = new List<Claim>
         {
             new(ClaimTypes.NameIdentifier, result.UserId.ToString()),
             new(ClaimTypes.Name, result.DisplayName),
-            new(ClaimTypes.Role, result.Role),
+            new(ClaimTypes.Role, role),
+            new(ClaimTypes.Email, result.Email),
             new("TaxNumber", result.TaxNumber)
         };
 
@@ -66,6 +72,7 @@ public class AuthController : Controller
                     : null
             });
 
+        ShowAlert("Hoş Geldiniz", $"{result.DisplayName} olarak giriş yaptınız.", "success");
         return RedirectToLocal(returnUrl);
     }
 

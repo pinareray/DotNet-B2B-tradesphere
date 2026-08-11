@@ -9,14 +9,12 @@
     <h2 class="mb-0">Ürün Listesi</h2>
     <div class="d-flex gap-2 align-items-center">
         <span class="badge bg-primary">@Model.Count() kayıt</span>
-        <a asp-action="Create" class="btn btn-success btn-sm">+ Yeni Ürün</a>
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-action="Create" class="btn btn-success btn-sm">+ Yeni Ürün</a>
+        }
     </div>
 </div>
-
-@if (TempData["CartError"] is string cartError)
-{
-    <div class="alert alert-danger shadow-sm">@cartError</div>
-}
 
 <div class="mb-3">
     @if (inStockOnly)
@@ -61,14 +59,17 @@
                             <button type="submit" class="btn btn-success btn-sm">Sepete Ekle</button>
                         </form>
                     }
-                    <a asp-action="Edit" asp-route-id="@product.Id" class="btn btn-outline-primary btn-sm">Düzenle</a>
-                    <form asp-action="Delete" asp-route-id="@product.Id" method="post" class="d-inline">
-                        @Html.AntiForgeryToken()
-                        <button type="submit" class="btn btn-outline-danger btn-sm"
-                                onclick="return confirm('Bu ürünü silmek istediğinize emin misiniz?');">
-                            Sil
-                        </button>
-                    </form>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@product.Id" class="btn btn-outline-primary btn-sm">Düzenle</a>
+                        <form asp-action="Delete" asp-route-id="@product.Id" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-outline-danger btn-sm"
+                                    onclick="return confirm('Bu ürünü silmek istediğinize emin misiniz?');">
+                                Sil
+                            </button>
+                        </form>
+                    }
                 </td>
             </tr>
         }
@@ -78,6 +79,10 @@
 @if (!Model.Any())
 {
     <div class="alert alert-info shadow-sm">
-        Henüz ürün bulunmuyor. <a asp-action="Create">İlk ürünü ekleyin.</a>
+        Henüz ürün bulunmuyor.
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-action="Create">İlk ürünü ekleyin.</a>
+        }
     </div>
 }

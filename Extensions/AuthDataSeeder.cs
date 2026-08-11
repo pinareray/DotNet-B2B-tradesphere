@@ -15,6 +15,23 @@ public static class AuthDataSeeder
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         var hasher = new PasswordHasher<Dealer>();
 
+        if (!await context.Dealers.AnyAsync(d => d.Email == "admin@tradesphere.com"))
+        {
+            var admin = new Dealer
+            {
+                CompanyName = "TradeSphere Admin",
+                TaxNumber = "0000000001",
+                Email = "admin@tradesphere.com",
+                Role = AppRoles.Admin,
+                DiscountRate = 0,
+                CreatedDate = DateTime.UtcNow,
+                IsActive = true
+            };
+            admin.PasswordHash = hasher.HashPassword(admin, "Admin123!");
+            context.Dealers.Add(admin);
+            await context.SaveChangesAsync();
+        }
+
         var dealers = await context.Dealers
             .Where(d => string.IsNullOrEmpty(d.PasswordHash))
             .ToListAsync();

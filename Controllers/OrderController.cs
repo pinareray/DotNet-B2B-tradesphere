@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using DotNet_B2B_tradesphere.Extensions;
 using DotNet_B2B_tradesphere.Services;
 using DotNet_B2B_tradesphere.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -8,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace DotNet_B2B_tradesphere.Controllers;
 
 [Authorize]
-public class OrderController : Controller
+public class OrderController : BaseController
 {
     private readonly IOrderService _orderService;
     private readonly ICartService _cartService;
@@ -26,7 +25,7 @@ public class OrderController : Controller
         var cart = _cartService.GetCart(HttpContext.Session);
         if (!cart.Items.Any())
         {
-            TempData["CartError"] = "Sepetiniz boş. Sipariş oluşturulamadı.";
+            ShowAlert("Hata", "Sepetiniz boş. Sipariş oluşturulamadı.", "error");
             return RedirectToAction("Index", "Cart");
         }
 
@@ -37,12 +36,13 @@ public class OrderController : Controller
         var orderId = await _orderService.CreateOrderAsync(cart, dealerId);
         if (orderId is null)
         {
-            TempData["CartError"] = "Sipariş oluşturulamadı. Stok yetersiz olabilir.";
+            ShowAlert("Hata", "Sipariş oluşturulamadı. Stok yetersiz olabilir.", "error");
             return RedirectToAction("Index", "Cart");
         }
 
         HttpContext.Session.Remove(CartService.SessionKey);
         TempData["OrderId"] = orderId;
+        ShowAlert("Sipariş Alındı", $"Siparişiniz başarıyla oluşturuldu. Sipariş No: #{orderId}", "success");
         return RedirectToAction(nameof(CheckoutSuccess));
     }
 

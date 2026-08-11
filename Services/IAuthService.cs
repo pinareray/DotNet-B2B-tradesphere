@@ -4,6 +4,7 @@ public record AuthResult(
     bool Success,
     int UserId = 0,
     string DisplayName = "",
+    string Email = "",
     string Role = "",
     string TaxNumber = "");
 

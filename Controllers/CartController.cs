@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace DotNet_B2B_tradesphere.Controllers;
 
 [Authorize]
-public class CartController : Controller
+public class CartController : BaseController
 {
     private readonly ICartService _cartService;
 
@@ -26,8 +26,12 @@ public class CartController : Controller
     {
         var added = await _cartService.AddToCartAsync(HttpContext.Session, productId, quantity);
         if (!added)
-            TempData["CartError"] = "Ürün sepete eklenemedi. Stok yetersiz veya ürün bulunamadı.";
+        {
+            ShowAlert("Hata", "Ürün sepete eklenemedi. Stok yetersiz veya ürün bulunamadı.", "error");
+            return RedirectToAction("Index", "Product");
+        }
 
+        ShowAlert("Sepete Eklendi", "Ürün sepetinize başarıyla eklendi.", "success");
         return RedirectToAction("Index", "Product");
     }
 
@@ -36,6 +40,7 @@ public class CartController : Controller
     public IActionResult RemoveFromCart(int productId)
     {
         _cartService.RemoveFromCart(HttpContext.Session, productId);
+        ShowAlert("Başarılı", "Ürün sepetten kaldırıldı.", "info");
         return RedirectToAction(nameof(Index));
     }
 
@@ -44,6 +49,7 @@ public class CartController : Controller
     public IActionResult ClearCart()
     {
         _cartService.ClearCart(HttpContext.Session);
+        ShowAlert("Başarılı", "Sepetiniz temizlendi.", "info");
         return RedirectToAction(nameof(Index));
     }
 }

@@ -36,6 +36,7 @@ public class AuthService : IAuthService
             Success: true,
             UserId: dealer.Id,
             DisplayName: dealer.CompanyName,
+            Email: dealer.Email,
             Role: dealer.Role,
             TaxNumber: dealer.TaxNumber);
     }
