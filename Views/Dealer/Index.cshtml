@@ -1,0 +1,32 @@
+@model IEnumerable<DotNet_B2B_tradesphere.ViewModels.DealerListViewModel>
+
+@{
+    ViewData["Title"] = "Bayi Listesi";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">Bayi Listesi</h2>
+    <span class="badge bg-primary">@Model.Count() kayıt</span>
+</div>
+
+<table class="table table-hover shadow-sm bg-white">
+    <thead class="table-dark">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Şirket Adı</th>
+            <th scope="col">Vergi No</th>
+            <th scope="col" class="text-end">İskonto Oranı</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var dealer in Model)
+        {
+            <tr>
+                <td>@dealer.Id</td>
+                <td>@dealer.CompanyName</td>
+                <td>@dealer.TaxNumber</td>
+                <td class="text-end">%@dealer.DiscountRate.ToString("0.##")</td>
+            </tr>
+        }
+    </tbody>
+</table>
