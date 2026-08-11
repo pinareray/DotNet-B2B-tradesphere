@@ -25,6 +25,9 @@ public class AppDbContext : DbContext
                 Id = 1,
                 CompanyName = "ABC Teknoloji Ltd.",
                 TaxNumber = "1234567890",
+                Email = "abc@tradesphere.com",
+                PasswordHash = string.Empty,
+                Role = AppRoles.Dealer,
                 DiscountRate = 15.0m,
                 CreatedDate = seedDate,
                 IsActive = true
@@ -34,6 +37,9 @@ public class AppDbContext : DbContext
                 Id = 2,
                 CompanyName = "XYZ Ticaret A.Ş.",
                 TaxNumber = "9876543210",
+                Email = "xyz@tradesphere.com",
+                PasswordHash = string.Empty,
+                Role = AppRoles.Dealer,
                 DiscountRate = 10.0m,
                 CreatedDate = seedDate,
                 IsActive = true

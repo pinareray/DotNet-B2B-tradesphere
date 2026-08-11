@@ -21,13 +21,34 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav ms-auto align-items-lg-center">
                     <li class="nav-item">
-                        <a class="nav-link active" href="/">Anasayfa</a>
+                        <a class="nav-link" href="/">Anasayfa</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Bayi Girişi</a>
-                    </li>
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <li class="nav-item">
+                            <span class="nav-link text-white-50">
+                                Merhaba, <strong class="text-white">@User.Identity.Name</strong>
+                            </span>
+                        </li>
+                        <li class="nav-item">
+                            <form asp-controller="Auth" asp-action="Logout" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-outline-light btn-sm ms-lg-2">
+                                    Çıkış Yap
+                                </button>
+                            </form>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link btn btn-outline-light btn-sm ms-lg-2" asp-controller="Auth" asp-action="Login">
+                                Bayi Girişi
+                            </a>
+                        </li>
+                    }
                 </ul>
             </div>
         </div>

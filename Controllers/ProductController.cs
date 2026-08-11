@@ -1,10 +1,12 @@
 using DotNet_B2B_tradesphere.Models;
 using DotNet_B2B_tradesphere.Services;
 using DotNet_B2B_tradesphere.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DotNet_B2B_tradesphere.Controllers;
 
+[Authorize]
 public class ProductController : Controller
 {
     private readonly IProductService _productService;

@@ -1,0 +1,54 @@
+@model DotNet_B2B_tradesphere.ViewModels.LoginViewModel
+
+@{
+    ViewData["Title"] = "Bayi Girişi";
+    Layout = "_Layout";
+}
+
+<div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+    <div class="col-md-5 col-lg-4">
+        <div class="card shadow border-0">
+            <div class="card-body p-4 p-md-5">
+                <div class="text-center mb-4">
+                    <h3 class="fw-bold text-dark">TradeSphere B2B</h3>
+                    <p class="text-muted mb-0">Bayi portalına giriş yapın</p>
+                </div>
+
+                <form asp-action="Login" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2" role="alert"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="EmailOrTaxNumber" class="form-label fw-semibold"></label>
+                        <input asp-for="EmailOrTaxNumber" class="form-control form-control-lg"
+                               placeholder="E-posta veya vergi numarası" autofocus />
+                        <span asp-validation-for="EmailOrTaxNumber" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label fw-semibold"></label>
+                        <input asp-for="Password" class="form-control form-control-lg"
+                               placeholder="••••••••" />
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4 form-check">
+                        <input asp-for="RememberMe" class="form-check-input" />
+                        <label asp-for="RememberMe" class="form-check-label"></label>
+                    </div>
+
+                    <button type="submit" class="btn btn-dark btn-lg w-100">Giriş Yap</button>
+                </form>
+
+                <p class="text-center text-muted small mt-4 mb-0">
+                    Kurumsal müşterilerimiz için güvenli B2B erişim
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
