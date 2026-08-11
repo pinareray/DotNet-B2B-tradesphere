@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using DotNet_B2B_tradesphere.Data;
 using DotNet_B2B_tradesphere.Models;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,9 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
 
     public async Task<IReadOnlyList<T>> GetAllAsync()
         => await _dbSet.AsNoTracking().ToListAsync();
+
+    public async Task<IReadOnlyList<T>> FindAsync(Expression<Func<T, bool>> predicate)
+        => await _dbSet.AsNoTracking().Where(predicate).ToListAsync();
 
     public async Task AddAsync(T entity)
     {

@@ -1,17 +1,9 @@
-using DotNet_B2B_tradesphere.Data;
-using DotNet_B2B_tradesphere.Repositories;
-using DotNet_B2B_tradesphere.Services;
-using Microsoft.EntityFrameworkCore;
+using DotNet_B2B_tradesphere.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
-
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-builder.Services.AddScoped<IDealerService, DealerService>();
+builder.Services.AddApplicationServices(builder.Configuration);
 
 var app = builder.Build();
 

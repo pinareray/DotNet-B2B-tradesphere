@@ -1,0 +1,71 @@
+@model IEnumerable<DotNet_B2B_tradesphere.ViewModels.ProductListViewModel>
+
+@{
+    ViewData["Title"] = "Ürün Listesi";
+    var inStockOnly = (bool)(ViewData["InStockOnly"] ?? false);
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">Ürün Listesi</h2>
+    <div class="d-flex gap-2 align-items-center">
+        <span class="badge bg-primary">@Model.Count() kayıt</span>
+        <a asp-action="Create" class="btn btn-success btn-sm">+ Yeni Ürün</a>
+    </div>
+</div>
+
+<div class="mb-3">
+    @if (inStockOnly)
+    {
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Tüm Ürünler</a>
+    }
+    else
+    {
+        <a asp-action="Index" asp-route-inStockOnly="true" class="btn btn-outline-primary btn-sm">Sadece Stoktakiler</a>
+    }
+</div>
+
+<table class="table table-hover shadow-sm bg-white">
+    <thead class="table-dark">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Ürün Adı</th>
+            <th scope="col" class="text-end">Fiyat</th>
+            <th scope="col" class="text-center">Stok</th>
+            <th scope="col" class="text-center">Durum</th>
+            <th scope="col" class="text-end">İşlemler</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var product in Model)
+        {
+            <tr>
+                <td>@product.Id</td>
+                <td>@product.Name</td>
+                <td class="text-end">@product.Price.ToString("C2")</td>
+                <td class="text-center">@product.StockQuantity</td>
+                <td class="text-center">
+                    <span class="badge @(product.StockQuantity > 0 ? "bg-success" : "bg-secondary")">
+                        @product.StockStatus
+                    </span>
+                </td>
+                <td class="text-end">
+                    <a asp-action="Edit" asp-route-id="@product.Id" class="btn btn-outline-primary btn-sm">Düzenle</a>
+                    <form asp-action="Delete" asp-route-id="@product.Id" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-outline-danger btn-sm"
+                                onclick="return confirm('Bu ürünü silmek istediğinize emin misiniz?');">
+                            Sil
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info shadow-sm">
+        Henüz ürün bulunmuyor. <a asp-action="Create">İlk ürünü ekleyin.</a>
+    </div>
+}
