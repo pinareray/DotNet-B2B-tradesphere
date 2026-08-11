@@ -19,6 +19,7 @@ public static class ServiceRegistration
         services.AddScoped<IDealerService, DealerService>();
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<ICartService, CartService>();
 
         return services;
     }

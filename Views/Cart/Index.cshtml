@@ -1,0 +1,71 @@
+@model DotNet_B2B_tradesphere.ViewModels.CartViewModel
+
+@{
+    ViewData["Title"] = "Sepetim";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">Sepetim</h2>
+    @if (Model.Items.Any())
+    {
+        <form asp-action="ClearCart" method="post">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-outline-danger btn-sm"
+                    onclick="return confirm('Sepeti tamamen boşaltmak istiyor musunuz?');">
+                Sepeti Temizle
+            </button>
+        </form>
+    }
+</div>
+
+@if (!Model.Items.Any())
+{
+    <div class="alert alert-warning shadow-sm text-center py-5">
+        <h4 class="alert-heading">Sepetiniz Boş</h4>
+        <p class="mb-3">Henüz sepetinize ürün eklemediniz.</p>
+        <a asp-controller="Product" asp-action="Index" class="btn btn-dark">Ürünlere Göz At</a>
+    </div>
+}
+else
+{
+    <table class="table table-hover shadow-sm bg-white">
+        <thead class="table-dark">
+            <tr>
+                <th scope="col">Ürün</th>
+                <th scope="col" class="text-end">Birim Fiyat</th>
+                <th scope="col" class="text-center">Adet</th>
+                <th scope="col" class="text-end">Satır Toplamı</th>
+                <th scope="col" class="text-end">İşlem</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>@item.ProductName</td>
+                    <td class="text-end">@item.Price.ToString("C2")</td>
+                    <td class="text-center">@item.Quantity</td>
+                    <td class="text-end">@item.LineTotal.ToString("C2")</td>
+                    <td class="text-end">
+                        <form asp-action="RemoveFromCart" asp-route-productId="@item.ProductId" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-outline-danger btn-sm">Kaldır</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="card shadow-sm border-0 mt-4">
+        <div class="card-body d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+            <div>
+                <span class="text-muted">Toplam Tutar</span>
+                <h3 class="mb-0 fw-bold">@Model.TotalAmount.ToString("C2")</h3>
+            </div>
+            <button type="button" class="btn btn-success btn-lg" disabled title="Sipariş modülü yakında eklenecek">
+                Alışverişi Tamamla
+            </button>
+        </div>
+    </div>
+}
