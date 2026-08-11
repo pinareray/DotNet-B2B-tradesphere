@@ -63,9 +63,12 @@ else
                 <span class="text-muted">Toplam Tutar</span>
                 <h3 class="mb-0 fw-bold">@Model.TotalAmount.ToString("C2")</h3>
             </div>
-            <button type="button" class="btn btn-success btn-lg" disabled title="Sipariş modülü yakında eklenecek">
-                Alışverişi Tamamla
-            </button>
+            <form asp-controller="Order" asp-action="Checkout" method="post">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-success btn-lg">
+                    Alışverişi Tamamla
+                </button>
+            </form>
         </div>
     </div>
 }
