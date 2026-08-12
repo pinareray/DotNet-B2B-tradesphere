@@ -97,10 +97,16 @@
         function updateRules() {
             const value = passwordInput.value;
             const hasValue = value.length > 0;
-            document.querySelectorAll('#passwordRules li').forEach((el) => {
-                const rule = el.dataset.rule;
-                setRuleState(el, rules[rule](value), hasValue);
+            const items = document.querySelectorAll('#passwordRules li');
+            let allValid = hasValue;
+
+            items.forEach((el) => {
+                const valid = rules[el.dataset.rule](value);
+                setRuleState(el, valid, hasValue);
+                if (!valid) allValid = false;
             });
+
+            document.getElementById('passwordRules').classList.toggle('is-complete', allValid);
             updateConfirm();
         }
 
