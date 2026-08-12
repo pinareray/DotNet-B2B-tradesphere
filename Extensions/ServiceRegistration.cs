@@ -22,6 +22,7 @@ public static class ServiceRegistration
         services.AddScoped<ICartService, CartService>();
         services.AddScoped<IOrderService, OrderService>();
         services.AddScoped<IPaymentService, DummyPaymentService>();
+        services.AddScoped<IInvoiceService, InvoiceService>();
 
         return services;
     }

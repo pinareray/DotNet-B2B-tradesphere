@@ -26,6 +26,7 @@ else
                 <th scope="col">Tarih</th>
                 <th scope="col" class="text-center">Ürün Adedi</th>
                 <th scope="col" class="text-end">Toplam Tutar</th>
+                <th scope="col" class="text-end">İşlem</th>
             </tr>
         </thead>
         <tbody>
@@ -36,6 +37,12 @@ else
                     <td>@order.OrderDate.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
                     <td class="text-center">@order.TotalItems</td>
                     <td class="text-end">@order.TotalAmount.ToString("C2")</td>
+                    <td class="text-end">
+                        <a asp-action="DownloadInvoice" asp-route-orderId="@order.OrderId"
+                           class="btn btn-outline-danger btn-sm">
+                            <i class="bi bi-file-earmark-pdf"></i> Faturayı İndir
+                        </a>
+                    </td>
                 </tr>
             }
         </tbody>

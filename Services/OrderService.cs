@@ -76,4 +76,14 @@ public class OrderService : IOrderService
             .OrderByDescending(o => o.OrderDate)
             .ToListAsync();
     }
+
+    public async Task<Order?> GetOrderWithDetailsAsync(int orderId)
+    {
+        return await _context.Orders
+            .AsNoTracking()
+            .Include(o => o.Dealer)
+            .Include(o => o.OrderItems)
+                .ThenInclude(i => i.Product)
+            .FirstOrDefaultAsync(o => o.Id == orderId);
+    }
 }

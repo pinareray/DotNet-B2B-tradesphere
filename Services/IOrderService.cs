@@ -7,4 +7,5 @@ public interface IOrderService
 {
     Task<int?> CreateOrderAsync(CartViewModel cart, string dealerId);
     Task<IReadOnlyList<Order>> GetOrdersByDealerAsync(string dealerId);
+    Task<Order?> GetOrderWithDetailsAsync(int orderId);
 }

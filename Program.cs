@@ -1,5 +1,8 @@
 using DotNet_B2B_tradesphere.Extensions;
 using DotNet_B2B_tradesphere.Hubs;
+using QuestPDF.Infrastructure;
+
+QuestPDF.Settings.License = LicenseType.Community;
 
 var builder = WebApplication.CreateBuilder(args);
 

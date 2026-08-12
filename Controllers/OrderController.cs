@@ -15,17 +15,20 @@ public class OrderController : BaseController
     private readonly ICartService _cartService;
     private readonly IPaymentService _paymentService;
     private readonly IHubContext<OrderHub> _hubContext;
+    private readonly IInvoiceService _invoiceService;
 
     public OrderController(
         IOrderService orderService,
         ICartService cartService,
         IPaymentService paymentService,
-        IHubContext<OrderHub> hubContext)
+        IHubContext<OrderHub> hubContext,
+        IInvoiceService invoiceService)
     {
         _orderService = orderService;
         _cartService = cartService;
         _paymentService = paymentService;
         _hubContext = hubContext;
+        _invoiceService = invoiceService;
     }
 
     [HttpGet]
@@ -112,5 +115,23 @@ public class OrderController : BaseController
         }).ToList();
 
         return View(viewModel);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> DownloadInvoice(int orderId)
+    {
+        var dealerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(dealerId) || !int.TryParse(dealerId, out var dealerIdInt))
+            return RedirectToAction("Login", "Auth");
+
+        var order = await _orderService.GetOrderWithDetailsAsync(orderId);
+        if (order is null)
+            return NotFound();
+
+        if (order.DealerId != dealerIdInt)
+            return Forbid();
+
+        var pdfBytes = _invoiceService.GenerateInvoicePdf(order, order.Dealer);
+        return File(pdfBytes, "application/pdf", $"Fatura_{orderId}.pdf");
     }
 }
