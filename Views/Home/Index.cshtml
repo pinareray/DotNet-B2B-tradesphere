@@ -1,35 +1,111 @@
 @{
-    ViewData["Title"] = "Anasayfa";
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="text-center mt-5">
-    <h1 class="display-4 fw-bold">TradeSphere B2B Portalına Hoş Geldiniz</h1>
-    <p class="lead mt-3">Kurumsal müşterilerimiz için tasarlanmış yeni nesil sipariş ve bayi yönetim sistemi.</p>
-    
-    <div class="row mt-5">
-        <div class="col-md-4">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">Dinamik İskontolar</h5>
-                    <p class="card-text">Cari hesaplarınıza özel tanımlanmış indirim oranlarıyla sipariş verin.</p>
-                </div>
+<div class="ts-page-header mb-4">
+    <h2>Dashboard</h2>
+    <p>TradeSphere B2B platformuna hoş geldiniz — işletmenizin genel görünümü</p>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="ts-card ts-card-stat">
+            <div class="stat-icon bg-primary bg-opacity-10 text-primary">
+                <i class="bi bi-receipt-cutoff"></i>
             </div>
+            <div class="stat-value">128</div>
+            <div class="stat-label">Toplam Sipariş</div>
         </div>
-        <div class="col-md-4">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">Hızlı Sipariş</h5>
-                    <p class="card-text">Excel üzerinden veya toplu sepet özelliğiyle saniyeler içinde sipariş oluşturun.</p>
-                </div>
+    </div>
+    <div class="col-md-4">
+        <div class="ts-card ts-card-stat">
+            <div class="stat-icon bg-success bg-opacity-10 text-success">
+                <i class="bi bi-box-seam"></i>
             </div>
+            <div class="stat-value">342</div>
+            <div class="stat-label">Aktif Ürünler</div>
         </div>
-        <div class="col-md-4">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">Cari Takibi</h5>
-                    <p class="card-text">Tüm geçmiş siparişlerinizi, ödemelerinizi ve bakiyenizi anlık görüntüleyin.</p>
-                </div>
+    </div>
+    <div class="col-md-4">
+        <div class="ts-card ts-card-stat">
+            <div class="stat-icon bg-warning bg-opacity-10 text-warning">
+                <i class="bi bi-currency-exchange"></i>
             </div>
+            <div class="stat-value">₺1.2M</div>
+            <div class="stat-label">Toplam Ciro</div>
         </div>
     </div>
 </div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="ts-chart-card">
+            <h5><i class="bi bi-bar-chart-line me-2 text-primary"></i>Aylık Satış Grafiği</h5>
+            <canvas id="salesChart" height="120"></canvas>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="ts-card p-4 h-100">
+            <h5 class="fw-bold mb-3"><i class="bi bi-lightning-charge me-2 text-warning"></i>Hızlı İşlemler</h5>
+            <div class="d-grid gap-2">
+                <a asp-controller="Product" asp-action="Index" class="btn btn-ts-primary">
+                    <i class="bi bi-box-seam me-2"></i>Ürün Kataloğu
+                </a>
+                <a asp-controller="Cart" asp-action="Index" class="btn btn-ts-outline">
+                    <i class="bi bi-cart3 me-2"></i>Sepetim
+                </a>
+                <a asp-controller="Order" asp-action="History" class="btn btn-ts-outline">
+                    <i class="bi bi-receipt me-2"></i>Sipariş Geçmişi
+                </a>
+            </div>
+            <hr class="my-4" />
+            <p class="small text-muted mb-0">
+                <i class="bi bi-info-circle me-1"></i>
+                Bu dashboard özet verileri şimdilik statik olarak gösterilmektedir.
+            </p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script>
+        const ctx = document.getElementById('salesChart');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'],
+                datasets: [{
+                    label: 'Satış (₺)',
+                    data: [85000, 92000, 78000, 105000, 118000, 95000, 132000, 128000, 145000, 138000, 162000, 175000],
+                    backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                    borderColor: 'rgba(59, 130, 246, 1)',
+                    borderWidth: 1,
+                    borderRadius: 6,
+                    hoverBackgroundColor: 'rgba(37, 99, 235, 0.85)'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: (ctx) => ' ₺' + ctx.raw.toLocaleString('tr-TR')
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(0,0,0,0.04)' },
+                        ticks: {
+                            callback: (v) => '₺' + (v / 1000) + 'K'
+                        }
+                    },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+    </script>
+}

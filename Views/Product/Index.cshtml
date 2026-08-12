@@ -1,88 +1,138 @@
 @model IEnumerable<DotNet_B2B_tradesphere.ViewModels.ProductListViewModel>
 
 @{
-    ViewData["Title"] = "Ürün Listesi";
+    ViewData["Title"] = "Ürün Kataloğu";
     var inStockOnly = (bool)(ViewData["InStockOnly"] ?? false);
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="mb-0">Ürün Listesi</h2>
-    <div class="d-flex gap-2 align-items-center">
-        <span class="badge bg-primary">@Model.Count() kayıt</span>
-        @if (User.IsInRole("Admin"))
-        {
-            <a asp-action="Create" class="btn btn-success btn-sm">+ Yeni Ürün</a>
-        }
+<div class="ts-page-header d-flex flex-wrap justify-content-between align-items-end gap-3">
+    <div>
+        <h2>Ürün Kataloğu</h2>
+        <p>@Model.Count() ürün listeleniyor</p>
+    </div>
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-action="Create" class="btn btn-ts-primary">
+            <i class="bi bi-plus-lg me-1"></i>Yeni Ürün
+        </a>
+    }
+</div>
+
+<div class="ts-search-bar">
+    <div class="row g-3 align-items-end">
+        <div class="col-md-5">
+            <label class="form-label small fw-semibold text-muted mb-1">
+                <i class="bi bi-search me-1"></i>Ürün Ara
+            </label>
+            <input type="text" class="form-control" placeholder="Ürün adı ile arayın..." disabled />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label small fw-semibold text-muted mb-1">
+                <i class="bi bi-funnel me-1"></i>Stok Durumu
+            </label>
+            <select class="form-select" disabled>
+                <option selected>Tümü</option>
+                <option>Stokta</option>
+                <option>Tükendi</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label small fw-semibold text-muted mb-1">
+                <i class="bi bi-sort-down me-1"></i>Sıralama
+            </label>
+            <select class="form-select" disabled>
+                <option selected>Varsayılan</option>
+                <option>Fiyat (Artan)</option>
+                <option>Fiyat (Azalan)</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            @if (inStockOnly)
+            {
+                <a asp-action="Index" class="btn btn-ts-outline w-100">
+                    <i class="bi bi-x-circle me-1"></i>Filtreyi Kaldır
+                </a>
+            }
+            else
+            {
+                <a asp-action="Index" asp-route-inStockOnly="true" class="btn btn-ts-primary w-100">
+                    <i class="bi bi-check-circle me-1"></i>Stoktakiler
+                </a>
+            }
+        </div>
     </div>
 </div>
 
-<div class="mb-3">
-    @if (inStockOnly)
-    {
-        <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Tüm Ürünler</a>
-    }
-    else
-    {
-        <a asp-action="Index" asp-route-inStockOnly="true" class="btn btn-outline-primary btn-sm">Sadece Stoktakiler</a>
-    }
-</div>
-
-<table class="table table-hover shadow-sm bg-white">
-    <thead class="table-dark">
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">Ürün Adı</th>
-            <th scope="col" class="text-end">Fiyat</th>
-            <th scope="col" class="text-center">Stok</th>
-            <th scope="col" class="text-center">Durum</th>
-            <th scope="col" class="text-end">İşlemler</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var product in Model)
-        {
-            <tr>
-                <td>@product.Id</td>
-                <td>@product.Name</td>
-                <td class="text-end">@product.Price.ToString("C2")</td>
-                <td class="text-center">@product.StockQuantity</td>
-                <td class="text-center">
-                    <span class="badge @(product.StockQuantity > 0 ? "bg-success" : "bg-secondary")">
-                        @product.StockStatus
-                    </span>
-                </td>
-                <td class="text-end">
-                    @if (product.StockQuantity > 0)
-                    {
-                        <form asp-controller="Cart" asp-action="AddToCart" asp-route-productId="@product.Id" method="post" class="d-inline">
-                            @Html.AntiForgeryToken()
-                            <button type="submit" class="btn btn-success btn-sm">Sepete Ekle</button>
-                        </form>
-                    }
-                    @if (User.IsInRole("Admin"))
-                    {
-                        <a asp-action="Edit" asp-route-id="@product.Id" class="btn btn-outline-primary btn-sm">Düzenle</a>
-                        <form asp-action="Delete" asp-route-id="@product.Id" method="post" class="d-inline">
-                            @Html.AntiForgeryToken()
-                            <button type="submit" class="btn btn-outline-danger btn-sm"
-                                    onclick="return confirm('Bu ürünü silmek istediğinize emin misiniz?');">
-                                Sil
-                            </button>
-                        </form>
-                    }
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-
 @if (!Model.Any())
 {
-    <div class="alert alert-info shadow-sm">
-        Henüz ürün bulunmuyor.
+    <div class="ts-empty-state">
+        <i class="bi bi-inbox d-block"></i>
+        <h5 class="fw-bold">Henüz ürün bulunmuyor</h5>
+        <p class="text-muted mb-3">Katalog boş görünüyor.</p>
         @if (User.IsInRole("Admin"))
         {
-            <a asp-action="Create">İlk ürünü ekleyin.</a>
+            <a asp-action="Create" class="btn btn-ts-primary">İlk Ürünü Ekle</a>
+        }
+    </div>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+        @foreach (var product in Model)
+        {
+            <div class="col">
+                <div class="product-card">
+                    <div class="product-card-header">
+                        <div class="product-icon">
+                            <i class="bi bi-box-seam"></i>
+                        </div>
+                    </div>
+                    <div class="product-card-body">
+                        <h5 class="product-card-title">@product.Name</h5>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="product-price-tag">@product.Price.ToString("C2")</span>
+                            <span class="product-stock-badge @(product.StockQuantity > 0 ? "bg-success-subtle text-success" : "bg-secondary-subtle text-secondary")">
+                                @product.StockStatus
+                            </span>
+                        </div>
+                        <small class="text-muted">
+                            <i class="bi bi-layers me-1"></i>Stok: @product.StockQuantity adet
+                        </small>
+                    </div>
+                    <div class="product-card-footer d-flex flex-column gap-2">
+                        @if (product.StockQuantity > 0)
+                        {
+                            <form asp-controller="Cart" asp-action="AddToCart" asp-route-productId="@product.Id" method="post">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-ts-primary w-100">
+                                    <i class="bi bi-cart-plus me-1"></i>Sepete Ekle
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <button class="btn btn-ts-outline w-100" disabled>
+                                <i class="bi bi-slash-circle me-1"></i>Stokta Yok
+                            </button>
+                        }
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <div class="d-flex gap-2">
+                                <a asp-action="Edit" asp-route-id="@product.Id" class="btn btn-ts-outline btn-sm flex-fill">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <form asp-action="Delete" asp-route-id="@product.Id" method="post" class="flex-fill">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-outline-danger btn-sm w-100"
+                                            onclick="return confirm('Bu ürünü silmek istediğinize emin misiniz?');">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
         }
     </div>
 }

@@ -1,13 +1,389 @@
-/* Özel Tasarımlarımız Buraya Gelecek */
+/* ── TradeSphere B2B — Premium UI ── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-.navbar-brand {
-    /* Logomuzun fontunu biraz kalınlaştıralım ve harf aralığını açalım */
-    font-weight: 800;
-    letter-spacing: 1px;
-    color: #ffc107 !important; /* Test için Navbar'daki logoyu sarı yapalım */
+:root {
+    --ts-primary: #1e3a5f;
+    --ts-primary-dark: #152a45;
+    --ts-accent: #3b82f6;
+    --ts-accent-hover: #2563eb;
+    --ts-success: #10b981;
+    --ts-warning: #f59e0b;
+    --ts-danger: #ef4444;
+    --ts-surface: #ffffff;
+    --ts-bg: #f0f4f8;
+    --ts-text: #1e293b;
+    --ts-text-muted: #64748b;
+    --ts-border: #e2e8f0;
+    --ts-shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.06);
+    --ts-shadow-md: 0 8px 24px rgba(15, 23, 42, 0.1);
+    --ts-shadow-lg: 0 16px 48px rgba(15, 23, 42, 0.12);
+    --ts-radius: 12px;
+    --ts-radius-lg: 16px;
+    --ts-transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--ts-bg); }
+::-webkit-scrollbar-thumb {
+    background: #94a3b8;
+    border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover { background: #64748b; }
+
+/* ── Base ── */
 body {
-    /* Arka planı çok hafif bir gri yapalım */
-    background-color: #f4f6f9 !important; 
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--ts-bg) !important;
+    color: var(--ts-text);
+    -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+/* ── Navbar (Glassmorphism + Corporate) ── */
+.ts-navbar {
+    background: linear-gradient(135deg, rgba(21, 42, 69, 0.95) 0%, rgba(30, 58, 95, 0.92) 100%);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: var(--ts-shadow-md);
+    padding: 0.75rem 0;
+}
+
+.navbar-brand {
+    font-weight: 800 !important;
+    letter-spacing: -0.03em;
+    color: #fff !important;
+    font-size: 1.35rem;
+}
+
+.navbar-brand span {
+    color: var(--ts-accent);
+}
+
+.ts-navbar .nav-link {
+    color: rgba(255, 255, 255, 0.75) !important;
+    font-weight: 500;
+    font-size: 0.9rem;
+    padding: 0.5rem 0.85rem !important;
+    border-radius: 8px;
+    transition: var(--ts-transition);
+}
+
+.ts-navbar .nav-link:hover {
+    color: #fff !important;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.ts-navbar .nav-link i {
+    margin-right: 6px;
+    opacity: 0.85;
+}
+
+.ts-user-badge {
+    color: rgba(255, 255, 255, 0.6) !important;
+    font-size: 0.85rem;
+}
+
+.ts-user-badge strong {
+    color: #fff;
+}
+
+/* ── Cards ── */
+.ts-card {
+    background: var(--ts-surface);
+    border: 1px solid var(--ts-border);
+    border-radius: var(--ts-radius-lg);
+    box-shadow: var(--ts-shadow-sm);
+    transition: transform var(--ts-transition), box-shadow var(--ts-transition);
+}
+
+.ts-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--ts-shadow-lg);
+}
+
+.ts-card-stat {
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.ts-card-stat::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 80px; height: 80px;
+    background: var(--ts-accent);
+    opacity: 0.06;
+    border-radius: 50%;
+    transform: translate(20px, -20px);
+}
+
+.ts-card-stat .stat-icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+}
+
+.ts-card-stat .stat-value {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 0.25rem;
+}
+
+.ts-card-stat .stat-label {
+    color: var(--ts-text-muted);
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+/* ── Product Cards ── */
+.product-card {
+    border: 1px solid var(--ts-border);
+    border-radius: var(--ts-radius-lg);
+    overflow: hidden;
+    background: var(--ts-surface);
+    box-shadow: var(--ts-shadow-sm);
+    transition: transform var(--ts-transition), box-shadow var(--ts-transition);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.product-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--ts-shadow-lg);
+}
+
+.product-card-header {
+    background: linear-gradient(135deg, var(--ts-primary) 0%, var(--ts-primary-dark) 100%);
+    padding: 1.75rem 1.25rem;
+    text-align: center;
+}
+
+.product-card-header .product-icon {
+    width: 56px; height: 56px;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: #fff;
+}
+
+.product-card-body {
+    padding: 1.25rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.product-card-title {
+    font-weight: 700;
+    font-size: 1.05rem;
+    margin-bottom: 0.75rem;
+    color: var(--ts-text);
+}
+
+.product-price-tag {
+    display: inline-block;
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    color: var(--ts-accent-hover);
+    font-weight: 800;
+    font-size: 1.25rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 8px;
+    letter-spacing: -0.02em;
+}
+
+.product-stock-badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.35rem 0.65rem;
+    border-radius: 99px;
+}
+
+.product-card-footer {
+    padding: 0 1.25rem 1.25rem;
+    margin-top: auto;
+}
+
+/* ── Buttons ── */
+.btn-ts-primary {
+    background: var(--ts-accent);
+    border: none;
+    color: #fff;
+    font-weight: 600;
+    border-radius: 10px;
+    padding: 0.55rem 1.25rem;
+    transition: transform var(--ts-transition), background var(--ts-transition), box-shadow var(--ts-transition);
+}
+
+.btn-ts-primary:hover {
+    background: var(--ts-accent-hover);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.35);
+}
+
+.btn-ts-outline {
+    border: 1.5px solid var(--ts-border);
+    background: transparent;
+    color: var(--ts-text);
+    font-weight: 600;
+    border-radius: 10px;
+    transition: transform var(--ts-transition), border-color var(--ts-transition);
+}
+
+.btn-ts-outline:hover {
+    border-color: var(--ts-accent);
+    color: var(--ts-accent);
+    transform: translateY(-2px);
+}
+
+.ts-navbar .btn-outline-light {
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: transform var(--ts-transition);
+}
+
+.ts-navbar .btn-outline-light:hover {
+    transform: translateY(-2px);
+}
+
+/* ── Search / Filter Bar ── */
+.ts-search-bar {
+    background: var(--ts-surface);
+    border: 1px solid var(--ts-border);
+    border-radius: var(--ts-radius-lg);
+    padding: 1.25rem 1.5rem;
+    box-shadow: var(--ts-shadow-sm);
+    margin-bottom: 2rem;
+}
+
+.ts-search-bar .form-control,
+.ts-search-bar .form-select {
+    border: 1.5px solid var(--ts-border);
+    border-radius: 10px;
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+    transition: border-color var(--ts-transition), box-shadow var(--ts-transition);
+}
+
+.ts-search-bar .form-control:focus,
+.ts-search-bar .form-select:focus {
+    border-color: var(--ts-accent);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+/* ── Page Header ── */
+.ts-page-header {
+    margin-bottom: 2rem;
+}
+
+.ts-page-header h2 {
+    font-size: 1.75rem;
+    margin-bottom: 0.25rem;
+}
+
+.ts-page-header p {
+    color: var(--ts-text-muted);
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+/* ── Dashboard Chart ── */
+.ts-chart-card {
+    background: var(--ts-surface);
+    border: 1px solid var(--ts-border);
+    border-radius: var(--ts-radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--ts-shadow-sm);
+}
+
+.ts-chart-card h5 {
+    font-weight: 700;
+    margin-bottom: 1.25rem;
+}
+
+/* ── Footer ── */
+.ts-footer {
+    background: linear-gradient(135deg, var(--ts-primary-dark) 0%, var(--ts-primary) 100%);
+    color: rgba(255, 255, 255, 0.7);
+    padding: 2.5rem 0 1.5rem;
+    margin-top: 4rem;
+}
+
+.ts-footer a {
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: none;
+    transition: color var(--ts-transition);
+}
+
+.ts-footer a:hover { color: #fff; }
+
+.ts-footer-brand {
+    font-weight: 800;
+    font-size: 1.15rem;
+    color: #fff;
+    letter-spacing: -0.02em;
+}
+
+.ts-footer-brand span { color: var(--ts-accent); }
+
+.ts-footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 2rem;
+    padding-top: 1.25rem;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* ── Empty State ── */
+.ts-empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--ts-surface);
+    border: 2px dashed var(--ts-border);
+    border-radius: var(--ts-radius-lg);
+}
+
+.ts-empty-state i {
+    font-size: 3rem;
+    color: var(--ts-text-muted);
+    opacity: 0.4;
+    margin-bottom: 1rem;
+}
+
+/* ── Cart Badge ── */
+.ts-cart-btn {
+    position: relative;
+}
+
+.ts-cart-badge {
+    position: absolute;
+    top: -6px; right: -6px;
+    background: var(--ts-danger);
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 700;
+    min-width: 18px; height: 18px;
+    border-radius: 99px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
 }

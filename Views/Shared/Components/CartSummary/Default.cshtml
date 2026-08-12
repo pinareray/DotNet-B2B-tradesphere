@@ -1,11 +1,9 @@
 @model int
 
-<a class="btn btn-outline-light btn-sm position-relative ms-lg-2" asp-controller="Cart" asp-action="Index">
-    Sepet
+<a class="nav-link ts-cart-btn d-inline-flex align-items-center" asp-controller="Cart" asp-action="Index">
+    <i class="bi bi-cart3"></i>Sepet
     @if (Model > 0)
     {
-        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-            @Model
-        </span>
+        <span class="ts-cart-badge">@Model</span>
     }
 </a>
