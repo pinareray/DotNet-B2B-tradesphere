@@ -76,6 +76,33 @@ public class AuthController : BaseController
         return RedirectToLocal(returnUrl);
     }
 
+    [HttpGet]
+    public IActionResult Register()
+    {
+        if (User.Identity?.IsAuthenticated == true)
+            return RedirectToAction("Index", "Product");
+
+        return View(new RegisterViewModel());
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Register(RegisterViewModel model)
+    {
+        if (!ModelState.IsValid)
+            return View(model);
+
+        var result = await _authService.RegisterDealerAsync(model);
+        if (!result.Success)
+        {
+            ModelState.AddModelError(string.Empty, result.ErrorMessage);
+            return View(model);
+        }
+
+        ShowAlert("Kayıt Başarılı", "Bayi hesabınız oluşturuldu. Şimdi giriş yapabilirsiniz.", "success");
+        return RedirectToAction(nameof(Login));
+    }
+
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Logout()

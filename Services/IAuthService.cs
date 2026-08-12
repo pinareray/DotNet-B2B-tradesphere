@@ -1,3 +1,5 @@
+using DotNet_B2B_tradesphere.ViewModels;
+
 namespace DotNet_B2B_tradesphere.Services;
 
 public record AuthResult(
@@ -8,7 +10,10 @@ public record AuthResult(
     string Role = "",
     string TaxNumber = "");
 
+public record RegisterResult(bool Success, string ErrorMessage = "");
+
 public interface IAuthService
 {
     Task<AuthResult> ValidateLoginAsync(string emailOrTaxNumber, string password);
+    Task<RegisterResult> RegisterDealerAsync(RegisterViewModel model);
 }

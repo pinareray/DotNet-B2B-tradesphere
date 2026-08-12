@@ -1,0 +1,64 @@
+@model DotNet_B2B_tradesphere.ViewModels.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Bayi Kaydı";
+}
+
+<div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow border-0">
+            <div class="card-body p-4 p-md-5">
+                <div class="text-center mb-4">
+                    <h3 class="fw-bold text-dark">Bayi Kaydı</h3>
+                    <p class="text-muted mb-0">Kurumsal hesabınızı oluşturun</p>
+                </div>
+
+                <form asp-action="Register" method="post">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2" role="alert"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="CompanyName" class="form-label fw-semibold"></label>
+                        <input asp-for="CompanyName" class="form-control form-control-lg" placeholder="Örn: ABC Teknoloji Ltd." />
+                        <span asp-validation-for="CompanyName" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="TaxNumber" class="form-label fw-semibold"></label>
+                        <input asp-for="TaxNumber" class="form-control form-control-lg" placeholder="10 veya 11 haneli vergi no" />
+                        <span asp-validation-for="TaxNumber" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label fw-semibold"></label>
+                        <input asp-for="Email" class="form-control form-control-lg" placeholder="firma@ornek.com" />
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label fw-semibold"></label>
+                        <input asp-for="Password" class="form-control form-control-lg" placeholder="En az 6 karakter" />
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="ConfirmPassword" class="form-label fw-semibold"></label>
+                        <input asp-for="ConfirmPassword" class="form-control form-control-lg" placeholder="Şifrenizi tekrar girin" />
+                        <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-dark btn-lg w-100">Kayıt Ol</button>
+                </form>
+
+                <p class="text-center mt-4 mb-0">
+                    Zaten hesabınız var mı?
+                    <a asp-action="Login" class="fw-semibold text-decoration-none">Giriş yapın</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

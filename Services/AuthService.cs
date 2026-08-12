@@ -1,5 +1,6 @@
 using DotNet_B2B_tradesphere.Data;
 using DotNet_B2B_tradesphere.Models;
+using DotNet_B2B_tradesphere.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -39,5 +40,35 @@ public class AuthService : IAuthService
             Email: dealer.Email,
             Role: dealer.Role,
             TaxNumber: dealer.TaxNumber);
+    }
+
+    public async Task<RegisterResult> RegisterDealerAsync(RegisterViewModel model)
+    {
+        var email = model.Email.Trim();
+        var taxNumber = model.TaxNumber.Trim();
+
+        var exists = await _context.Dealers.AnyAsync(d =>
+            d.Email == email || d.TaxNumber == taxNumber);
+
+        if (exists)
+            return new RegisterResult(false, "Bu e-posta veya vergi numarası ile kayıtlı bir bayi zaten var.");
+
+        var dealer = new Dealer
+        {
+            CompanyName = model.CompanyName.Trim(),
+            TaxNumber = taxNumber,
+            Email = email,
+            Role = AppRoles.Dealer,
+            DiscountRate = 0,
+            CreatedDate = DateTime.UtcNow,
+            IsActive = true
+        };
+
+        dealer.PasswordHash = _passwordHasher.HashPassword(dealer, model.Password);
+
+        _context.Dealers.Add(dealer);
+        await _context.SaveChangesAsync();
+
+        return new RegisterResult(true);
     }
 }

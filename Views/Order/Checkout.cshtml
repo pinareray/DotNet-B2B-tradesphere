@@ -1,0 +1,131 @@
+@model DotNet_B2B_tradesphere.ViewModels.CheckoutViewModel
+
+@{
+    ViewData["Title"] = "Ödeme";
+}
+
+<div class="ts-page-header mb-4">
+    <h2><i class="bi bi-credit-card me-2"></i>Sanal POS Ödeme</h2>
+    <p>Güvenli ödeme adımını tamamlayarak siparişinizi onaylayın</p>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="ts-card p-4">
+            <div class="payment-card-visual mb-4">
+                <div class="payment-card-chip"></div>
+                <div class="payment-card-number" id="cardPreview">•••• •••• •••• ••••</div>
+                <div class="d-flex justify-content-between align-items-end mt-4">
+                    <div>
+                        <small class="payment-card-label">KART SAHİBİ</small>
+                        <div class="payment-card-holder" id="holderPreview">AD SOYAD</div>
+                    </div>
+                    <div class="text-end">
+                        <small class="payment-card-label">SKT</small>
+                        <div class="payment-card-expiry" id="expiryPreview">MM/YY</div>
+                    </div>
+                </div>
+            </div>
+
+            <form asp-action="Checkout" method="post">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2" role="alert"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Payment.CardHolderName" class="form-label fw-semibold"></label>
+                    <input asp-for="Payment.CardHolderName" class="form-control form-control-lg payment-input"
+                           placeholder="Ad Soyad" id="cardHolderInput" />
+                    <span asp-validation-for="Payment.CardHolderName" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Payment.CardNumber" class="form-label fw-semibold"></label>
+                    <input asp-for="Payment.CardNumber" class="form-control form-control-lg payment-input"
+                           placeholder="1234 5678 9012 3456" maxlength="16" id="cardNumberInput" />
+                    <span asp-validation-for="Payment.CardNumber" class="text-danger small"></span>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="Payment.ExpirationDate" class="form-label fw-semibold"></label>
+                        <input asp-for="Payment.ExpirationDate" class="form-control form-control-lg payment-input"
+                               placeholder="MM/YY" maxlength="5" id="expiryInput" />
+                        <span asp-validation-for="Payment.ExpirationDate" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Payment.CVV" class="form-label fw-semibold"></label>
+                        <input asp-for="Payment.CVV" class="form-control form-control-lg payment-input"
+                               placeholder="•••" maxlength="3" type="password" />
+                        <span asp-validation-for="Payment.CVV" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2 mt-4">
+                    <button type="submit" class="btn btn-ts-primary btn-lg flex-fill">
+                        <i class="bi bi-lock-fill me-2"></i>Ödemeyi Tamamla
+                    </button>
+                    <a asp-controller="Cart" asp-action="Index" class="btn btn-ts-outline btn-lg">İptal</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="ts-card p-4 sticky-top" style="top: 1rem;">
+            <h5 class="fw-bold mb-3">
+                <i class="bi bi-receipt me-2 text-primary"></i>Sipariş Özeti
+            </h5>
+
+            <ul class="list-unstyled mb-0">
+                @foreach (var item in Model.Cart.Items)
+                {
+                    <li class="d-flex justify-content-between align-items-start py-2 border-bottom">
+                        <div>
+                            <span class="fw-semibold">@item.ProductName</span>
+                            <small class="d-block text-muted">@item.Quantity x @item.Price.ToString("C2")</small>
+                        </div>
+                        <span class="fw-semibold">@item.LineTotal.ToString("C2")</span>
+                    </li>
+                }
+            </ul>
+
+            <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+                <span class="text-muted">Toplam (@Model.Cart.TotalItems ürün)</span>
+                <span class="fs-4 fw-bold text-primary">@Model.Cart.TotalAmount.ToString("C2")</span>
+            </div>
+
+            <div class="mt-4 p-3 rounded-3 bg-light small text-muted">
+                <i class="bi bi-shield-check me-1 text-success"></i>
+                Test modu: <code>0000</code> ile başlayan kart numaraları reddedilir.
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        const cardInput = document.getElementById('cardNumberInput');
+        const holderInput = document.getElementById('cardHolderInput');
+        const expiryInput = document.getElementById('expiryInput');
+
+        cardInput?.addEventListener('input', (e) => {
+            let v = e.target.value.replace(/\D/g, '').slice(0, 16);
+            e.target.value = v;
+            document.getElementById('cardPreview').textContent =
+                v.replace(/(.{4})/g, '$1 ').trim() || '•••• •••• •••• ••••';
+        });
+
+        holderInput?.addEventListener('input', (e) => {
+            document.getElementById('holderPreview').textContent =
+                e.target.value.toUpperCase() || 'AD SOYAD';
+        });
+
+        expiryInput?.addEventListener('input', (e) => {
+            let v = e.target.value.replace(/\D/g, '').slice(0, 4);
+            if (v.length >= 3) v = v.slice(0, 2) + '/' + v.slice(2);
+            e.target.value = v;
+            document.getElementById('expiryPreview').textContent = v || 'MM/YY';
+        });
+    </script>
+}

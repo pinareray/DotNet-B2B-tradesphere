@@ -11,22 +11,53 @@ public class OrderController : BaseController
 {
     private readonly IOrderService _orderService;
     private readonly ICartService _cartService;
+    private readonly IPaymentService _paymentService;
 
-    public OrderController(IOrderService orderService, ICartService cartService)
+    public OrderController(
+        IOrderService orderService,
+        ICartService cartService,
+        IPaymentService paymentService)
     {
         _orderService = orderService;
         _cartService = cartService;
+        _paymentService = paymentService;
+    }
+
+    [HttpGet]
+    public IActionResult Checkout()
+    {
+        var cart = _cartService.GetCart(HttpContext.Session);
+        if (!cart.Items.Any())
+        {
+            ShowAlert("Hata", "Sepetiniz boş. Ödeme sayfasına geçilemedi.", "error");
+            return RedirectToAction("Index", "Cart");
+        }
+
+        return View(new CheckoutViewModel { Cart = cart });
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Checkout()
+    public async Task<IActionResult> Checkout(CheckoutViewModel model)
     {
         var cart = _cartService.GetCart(HttpContext.Session);
         if (!cart.Items.Any())
         {
             ShowAlert("Hata", "Sepetiniz boş. Sipariş oluşturulamadı.", "error");
             return RedirectToAction("Index", "Cart");
+        }
+
+        model.Cart = cart;
+
+        if (!ModelState.IsValid)
+            return View(model);
+
+        var paymentSuccess = await _paymentService.ProcessPaymentAsync(model.Payment);
+        if (!paymentSuccess)
+        {
+            ModelState.AddModelError(string.Empty, "Ödeme reddedildi. Lütfen kart bilgilerinizi kontrol edin.");
+            ShowAlert("Ödeme Reddedildi", "Sanal POS işlemi başarısız oldu. Kart numaranızı kontrol edin.", "error");
+            return View(model);
         }
 
         var dealerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -40,9 +71,9 @@ public class OrderController : BaseController
             return RedirectToAction("Index", "Cart");
         }
 
-        HttpContext.Session.Remove(CartService.SessionKey);
+        _cartService.ClearCart(HttpContext.Session);
         TempData["OrderId"] = orderId;
-        ShowAlert("Sipariş Alındı", $"Siparişiniz başarıyla oluşturuldu. Sipariş No: #{orderId}", "success");
+        ShowAlert("Sipariş Alındı", $"Ödemeniz alındı. Sipariş No: #{orderId}", "success");
         return RedirectToAction(nameof(CheckoutSuccess));
     }
 
