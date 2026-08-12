@@ -1,38 +1,59 @@
 using DotNet_B2B_tradesphere.Extensions;
 using DotNet_B2B_tradesphere.Hubs;
 using QuestPDF.Infrastructure;
+using Serilog;
 
 QuestPDF.Settings.License = LicenseType.Community;
 
-var builder = WebApplication.CreateBuilder(args);
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
 
-builder.Services.AddControllersWithViews();
-builder.Services.AddApplicationServices(builder.Configuration);
-builder.Services.AddAuthenticationServices();
-builder.Services.AddSignalR();
-
-builder.Services.AddDistributedMemoryCache();
-builder.Services.AddSession(options =>
+try
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30);
-    options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true;
-});
+    var builder = WebApplication.CreateBuilder(args);
 
-var app = builder.Build();
+    builder.Logging.ClearProviders();
+    builder.Host.UseSerilog();
 
-await AuthDataSeeder.SeedDealerCredentialsAsync(app.Services);
+    builder.Services.AddControllersWithViews();
+    builder.Services.AddApplicationServices(builder.Configuration);
+    builder.Services.AddAuthenticationServices();
+    builder.Services.AddSignalR();
 
-app.UseStaticFiles();
-app.UseRouting();
+    builder.Services.AddDistributedMemoryCache();
+    builder.Services.AddSession(options =>
+    {
+        options.IdleTimeout = TimeSpan.FromMinutes(30);
+        options.Cookie.HttpOnly = true;
+        options.Cookie.IsEssential = true;
+    });
 
-app.UseAuthentication();
-app.UseAuthorization();
-app.UseSession();
+    var app = builder.Build();
 
-app.MapHub<OrderHub>("/orderHub");
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    await AuthDataSeeder.SeedDealerCredentialsAsync(app.Services);
 
-app.Run();
+    app.UseExceptionHandler("/Home/Error");
+    app.UseStaticFiles();
+    app.UseRouting();
+
+    app.UseAuthentication();
+    app.UseAuthorization();
+    app.UseSession();
+
+    app.MapHub<OrderHub>("/orderHub");
+    app.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Home}/{action=Index}/{id?}");
+
+    app.Run();
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Uygulama başlatılamadı.");
+}
+finally
+{
+    Log.CloseAndFlush();
+}

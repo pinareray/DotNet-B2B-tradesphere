@@ -1,0 +1,18 @@
+@{
+    ViewData["Title"] = "Bir hata oluştu";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow border-0 text-center">
+            <div class="card-body p-5">
+                <i class="bi bi-exclamation-triangle display-4 text-warning"></i>
+                <h2 class="fw-bold mt-3 mb-3">Bir şeyler ters gitti</h2>
+                <p class="text-muted mb-4">
+                    Beklenmeyen bir hata oluştu. Teknik ekibimiz bilgilendirildi.
+                </p>
+                <a asp-controller="Home" asp-action="Index" class="btn btn-dark">Anasayfaya Dön</a>
+            </div>
+        </div>
+    </div>
+</div>
