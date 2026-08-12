@@ -120,5 +120,30 @@
             });
         </script>
     }
+    @if (User.IsInRole("Admin"))
+    {
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+        <script>
+            const orderConnection = new signalR.HubConnectionBuilder()
+                .withUrl("/orderHub")
+                .withAutomaticReconnect()
+                .build();
+
+            orderConnection.on("ReceiveNewOrder", (message) => {
+                Swal.fire({
+                    toast: true,
+                    position: "top-end",
+                    icon: "success",
+                    title: "Yeni Sipariş",
+                    text: message,
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+            });
+
+            orderConnection.start().catch((err) => console.error("SignalR bağlantı hatası:", err));
+        </script>
+    }
 </body>
 </html>

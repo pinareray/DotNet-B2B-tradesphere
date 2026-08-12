@@ -37,14 +37,24 @@
 
                     <div class="mb-3">
                         <label asp-for="Password" class="form-label fw-semibold"></label>
-                        <input asp-for="Password" class="form-control form-control-lg" placeholder="En az 6 karakter" />
+                        <input asp-for="Password" class="form-control form-control-lg" id="passwordInput"
+                               placeholder="Güçlü bir şifre oluşturun" autocomplete="new-password" />
                         <span asp-validation-for="Password" class="text-danger small"></span>
+                        <ul class="password-rules list-unstyled mt-2 mb-0" id="passwordRules">
+                            <li data-rule="length"><i class="bi bi-circle"></i> En az 8 karakter</li>
+                            <li data-rule="upper"><i class="bi bi-circle"></i> En az 1 büyük harf (A-Z)</li>
+                            <li data-rule="lower"><i class="bi bi-circle"></i> En az 1 küçük harf (a-z)</li>
+                            <li data-rule="digit"><i class="bi bi-circle"></i> En az 1 rakam (0-9)</li>
+                            <li data-rule="special"><i class="bi bi-circle"></i> En az 1 özel karakter (!@@#$%...)</li>
+                        </ul>
                     </div>
 
                     <div class="mb-4">
                         <label asp-for="ConfirmPassword" class="form-label fw-semibold"></label>
-                        <input asp-for="ConfirmPassword" class="form-control form-control-lg" placeholder="Şifrenizi tekrar girin" />
+                        <input asp-for="ConfirmPassword" class="form-control form-control-lg" id="confirmPasswordInput"
+                               placeholder="Şifrenizi tekrar girin" autocomplete="new-password" />
                         <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                        <small id="confirmHint" class="d-block mt-1 password-rule-pending"></small>
                     </div>
 
                     <button type="submit" class="btn btn-dark btn-lg w-100">Kayıt Ol</button>
@@ -61,4 +71,54 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        const passwordInput = document.getElementById('passwordInput');
+        const confirmInput = document.getElementById('confirmPasswordInput');
+        const confirmHint = document.getElementById('confirmHint');
+        const rules = {
+            length: (v) => v.length >= 8,
+            upper: (v) => /[A-Z]/.test(v),
+            lower: (v) => /[a-z]/.test(v),
+            digit: (v) => /\d/.test(v),
+            special: (v) => /[^\da-zA-Z]/.test(v)
+        };
+
+        function setRuleState(el, valid, hasValue) {
+            el.classList.toggle('valid', hasValue && valid);
+            el.classList.toggle('invalid', hasValue && !valid);
+            const icon = el.querySelector('i');
+            if (!hasValue) {
+                icon.className = 'bi bi-circle';
+                return;
+            }
+            icon.className = valid ? 'bi bi-check-circle-fill' : 'bi bi-x-circle-fill';
+        }
+
+        function updateRules() {
+            const value = passwordInput.value;
+            const hasValue = value.length > 0;
+            document.querySelectorAll('#passwordRules li').forEach((el) => {
+                const rule = el.dataset.rule;
+                setRuleState(el, rules[rule](value), hasValue);
+            });
+            updateConfirm();
+        }
+
+        function updateConfirm() {
+            const password = passwordInput.value;
+            const confirm = confirmInput.value;
+            if (!confirm) {
+                confirmHint.textContent = '';
+                confirmHint.className = 'd-block mt-1';
+                return;
+            }
+            const match = password === confirm;
+            confirmHint.textContent = match ? 'Şifreler eşleşiyor' : 'Şifreler eşleşmiyor';
+            confirmHint.className = 'd-block mt-1 ' + (match ? 'password-rule-valid' : 'password-rule-invalid');
+        }
+
+        passwordInput.addEventListener('input', updateRules);
+        confirmInput.addEventListener('input', updateConfirm);
+        updateRules();
+    </script>
 }

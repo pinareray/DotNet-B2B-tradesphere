@@ -445,3 +445,23 @@ h1, h2, h3, h4, h5, h6 {
     border-color: var(--ts-accent);
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
+
+/* ── Password rules ── */
+.password-rules li {
+    font-size: 0.82rem;
+    color: var(--ts-text-muted);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 0.2rem;
+    transition: color 0.2s ease;
+}
+
+.password-rules li i { font-size: 0.9rem; }
+
+.password-rules li.valid,
+.password-rule-valid { color: var(--ts-success); }
+
+.password-rules li.invalid,
+.password-rule-invalid { color: var(--ts-danger); }
+

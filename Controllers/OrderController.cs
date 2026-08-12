@@ -1,8 +1,10 @@
 using System.Security.Claims;
+using DotNet_B2B_tradesphere.Hubs;
 using DotNet_B2B_tradesphere.Services;
 using DotNet_B2B_tradesphere.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace DotNet_B2B_tradesphere.Controllers;
 
@@ -12,15 +14,18 @@ public class OrderController : BaseController
     private readonly IOrderService _orderService;
     private readonly ICartService _cartService;
     private readonly IPaymentService _paymentService;
+    private readonly IHubContext<OrderHub> _hubContext;
 
     public OrderController(
         IOrderService orderService,
         ICartService cartService,
-        IPaymentService paymentService)
+        IPaymentService paymentService,
+        IHubContext<OrderHub> hubContext)
     {
         _orderService = orderService;
         _cartService = cartService;
         _paymentService = paymentService;
+        _hubContext = hubContext;
     }
 
     [HttpGet]
@@ -73,6 +78,11 @@ public class OrderController : BaseController
 
         _cartService.ClearCart(HttpContext.Session);
         TempData["OrderId"] = orderId;
+
+        await _hubContext.Clients.All.SendAsync(
+            "ReceiveNewOrder",
+            "Yeni bir sipariş alındı! Sipariş Tutarı: " + cart.TotalAmount.ToString("C2"));
+
         ShowAlert("Sipariş Alındı", $"Ödemeniz alındı. Sipariş No: #{orderId}", "success");
         return RedirectToAction(nameof(CheckoutSuccess));
     }
