@@ -1,0 +1,108 @@
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="admin-stat-card">
+            <div class="admin-stat-icon bg-primary-subtle text-primary">
+                <i class="bi bi-receipt-cutoff"></i>
+            </div>
+            <div class="admin-stat-value">128</div>
+            <div class="admin-stat-label">Toplam Sipariş</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="admin-stat-card">
+            <div class="admin-stat-icon bg-success-subtle text-success">
+                <i class="bi bi-people"></i>
+            </div>
+            <div class="admin-stat-value">24</div>
+            <div class="admin-stat-label">Aktif Bayi</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="admin-stat-card">
+            <div class="admin-stat-icon bg-warning-subtle text-warning">
+                <i class="bi bi-currency-exchange"></i>
+            </div>
+            <div class="admin-stat-value">₺1.2M</div>
+            <div class="admin-stat-label">Aylık Ciro</div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="admin-panel-card">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0"><i class="bi bi-graph-up-arrow me-2 text-info"></i>Sipariş İstatistikleri</h5>
+                <span class="badge text-bg-secondary">Son 12 ay</span>
+            </div>
+            <canvas id="adminSalesChart" height="120"></canvas>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="admin-panel-card h-100">
+            <h5 class="mb-3"><i class="bi bi-activity me-2 text-success"></i>Sistem Durumu</h5>
+            <ul class="list-unstyled admin-status-list mb-0">
+                <li><span class="dot dot-success"></span> SignalR Hub aktif</li>
+                <li><span class="dot dot-success"></span> Veritabanı bağlı</li>
+                <li><span class="dot dot-warning"></span> 3 düşük stok uyarısı</li>
+                <li><span class="dot dot-success"></span> PDF servisi hazır</li>
+            </ul>
+            <hr class="border-secondary" />
+            <p class="small text-muted mb-0">
+                Admin paneli ana uygulamadan izole <code>Areas/Admin</code> yapısı ile çalışmaktadır.
+            </p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script>
+        const ctx = document.getElementById('adminSalesChart');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'],
+                datasets: [{
+                    label: 'Sipariş (₺)',
+                    data: [62000, 71000, 68000, 89000, 95000, 88000, 102000, 98000, 115000, 108000, 124000, 131000],
+                    borderColor: '#38bdf8',
+                    backgroundColor: 'rgba(56, 189, 248, 0.15)',
+                    fill: true,
+                    tension: 0.35,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: (c) => ' ₺' + c.raw.toLocaleString('tr-TR')
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(255,255,255,0.06)' },
+                        ticks: {
+                            color: '#94a3b8',
+                            callback: (v) => '₺' + (v / 1000) + 'K'
+                        }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#94a3b8' }
+                    }
+                }
+            }
+        });
+    </script>
+}

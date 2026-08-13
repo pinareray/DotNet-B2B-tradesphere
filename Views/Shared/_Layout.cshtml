@@ -41,6 +41,14 @@
                                 <i class="bi bi-receipt"></i>Siparişlerim
                             </a>
                         </li>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
+                                    <i class="bi bi-shield-lock"></i>Admin Panel
+                                </a>
+                            </li>
+                        }
                         <li class="nav-item">
                             <span class="nav-link ts-user-badge">
                                 <i class="bi bi-person-circle"></i>
